@@ -56,7 +56,13 @@ const Footer: React.FC = () => {
       })
     } catch (error: any) {
       console.error('Contact form error:', error)
-      toast.error('Failed to send message. Please try again.')
+      if (error.message?.toLowerCase().includes('network')) {
+        toast.error('Network error: Please check your internet connection or try again later.')
+      } else if (error.message?.toLowerCase().includes('invalid api key')) {
+        toast.error('Supabase credentials are invalid. Please contact support.')
+      } else {
+        toast.error('Failed to send message. Please try again.')
+      }
     } finally {
       setIsSubmitting(false)
     }

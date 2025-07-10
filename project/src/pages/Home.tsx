@@ -87,7 +87,13 @@ const Home: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Waitlist signup error:', error)
-      toast.error('Failed to join waitlist. Please try again.')
+      if (error.message?.toLowerCase().includes('network')) {
+        toast.error('Network error: Please check your internet connection or try again later.')
+      } else if (error.message?.toLowerCase().includes('invalid api key')) {
+        toast.error('Supabase credentials are invalid. Please contact support.')
+      } else {
+        toast.error('Failed to join waitlist. Please try again.')
+      }
     } finally {
       setIsSubmittingWaitlist(false)
     }

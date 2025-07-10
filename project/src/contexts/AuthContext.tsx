@@ -56,39 +56,84 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   const signIn = async (email: string, password: string, userType: 'business' | 'worker') => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    
-    if (error) throw error
-    
-    // Verify user type matches
-    if (data.user?.user_metadata?.user_type !== userType) {
-      throw new Error(`This account is registered as a ${data.user?.user_metadata?.user_type}, not a ${userType}`)
+    try {
+      const result = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      const error = result?.error;
+      const data = result?.data;
+      if (error) throw new Error(error.message || 'Unknown error');
+      // Only check user type if data and data.user exist
+      if (data && data.user && data.user.user_metadata?.user_type !== userType) {
+        throw new Error(`This account is registered as a ${data.user.user_metadata.user_type}, not a ${userType}`);
+      }
+      setUserType(userType);
+    } catch (err: any) {
+      if (err && err.message?.toLowerCase().includes('network')) {
+        throw new Error('Network error: Please check your internet connection or try again later.');
+      }
+      if (err && err.message?.toLowerCase().includes('invalid api key')) {
+        throw new Error('Supabase credentials are invalid. Please contact support.');
+      }
+      throw err instanceof Error ? err : new Error(String(err));
     }
-    
-    setUserType(userType)
   }
 
   const signUp = async (email: string, password: string, userType: 'business' | 'worker') => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          user_type: userType
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            user_type: userType
+          }
         }
+      })
+      if (error) {
+        if (error.message?.toLowerCase().includes('network')) {
+          throw new Error('Network error: Please check your internet connection or try again later.')
+        }
+        if (error.message?.toLowerCase().includes('invalid api key')) {
+          throw new Error('Supabase credentials are invalid. Please contact support.')
+        }
+        throw error
       }
-    })
-    if (error) throw error
-    return data.user
+      return data.user
+    } catch (err: any) {
+      if (err.message?.toLowerCase().includes('network')) {
+        throw new Error('Network error: Please check your internet connection or try again later.')
+      }
+      if (err.message?.toLowerCase().includes('invalid api key')) {
+        throw new Error('Supabase credentials are invalid. Please contact support.')
+      }
+      throw err
+    }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-    setUserType(null)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        if (error.message?.toLowerCase().includes('network')) {
+          throw new Error('Network error: Please check your internet connection or try again later.')
+        }
+        if (error.message?.toLowerCase().includes('invalid api key')) {
+          throw new Error('Supabase credentials are invalid. Please contact support.')
+        }
+        throw error
+      }
+      setUserType(null)
+    } catch (err: any) {
+      if (err.message?.toLowerCase().includes('network')) {
+        throw new Error('Network error: Please check your internet connection or try again later.')
+      }
+      if (err.message?.toLowerCase().includes('invalid api key')) {
+        throw new Error('Supabase credentials are invalid. Please contact support.')
+      }
+      throw err
+    }
   }
 
   const value = {

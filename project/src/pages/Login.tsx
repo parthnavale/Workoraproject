@@ -20,15 +20,15 @@ const Login: React.FC = () => {
     try {
       await signIn(email, password, userType)
       toast.success('Login successful!')
-      
-      // Navigate based on user type
-      if (userType === 'business') {
-        navigate('/business-dashboard')
-      } else {
-        navigate('/worker-dashboard')
-      }
+      navigate('/dashboard')
     } catch (error: any) {
-      toast.error(error.message || 'Login failed')
+      let message = 'Login failed';
+      if (error && typeof error === 'object' && 'message' in error) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
+      }
+      toast.error(message);
     } finally {
       setIsLoading(false)
     }

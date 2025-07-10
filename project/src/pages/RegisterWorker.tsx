@@ -207,9 +207,11 @@ const RegisterWorker: React.FC = () => {
       setConfirmPassword('')
     } catch (err: any) {
       console.error('Registration error:', err)
-      
-      // Handle specific error cases
-      if (err.message?.includes('User already registered') || err.message?.includes('user_already_exists')) {
+      if (err.message?.toLowerCase().includes('network')) {
+        setError('Network error: Please check your internet connection or try again later.')
+      } else if (err.message?.toLowerCase().includes('invalid api key')) {
+        setError('Supabase credentials are invalid. Please contact support.')
+      } else if (err.message?.includes('User already registered') || err.message?.includes('user_already_exists')) {
         setError('An account with this email already exists. Please sign in instead or use a different email address.')
       } else if (err.message?.includes('row-level security policy')) {
         setError('There was a security issue with your registration. Please try again or contact support.')
