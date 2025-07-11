@@ -466,14 +466,16 @@ const Home: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-shadow">
               <div className="relative">
                 <img 
-                  src="https://media.licdn.com/dms/image/v2/D4D03AQGYVZ175vHQjg/profile-displayphoto-shrink_400_400/B4DZUGD.vAHkAg-/0/1739563462824?e=1757548800&v=beta&t=qnX_N-uiAO_yfq0xxdYK_ugrVa4fmsYvXQQ96kkRpnE"
+                  src="/founder1.jpeg"
                   alt="Founder"
-                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300 border-black"
+                  style={{ borderWidth: '32px', borderStyle: 'solid' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="text-2xl font-bold">Founder</h3>
+                  <p className="font-bold text-white">Ashupriya</p>
                   <p className="text-yellow-300">CEO</p>
+                  <p className="text-yellow-300">Founder</p>
                 </div>
               </div>
               
@@ -490,14 +492,16 @@ const Home: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-shadow">
               <div className="relative">
                 <img 
-                  src="https://media.licdn.com/dms/image/v2/D5635AQHhGdIP8OzlqQ/profile-framedphoto-shrink_800_800/B56Zapj3pZHgAg-/0/1746601475110?e=1752591600&v=beta&t=QqDHqFLofit0rq-OCc90jJRpRfEeSNsR3PUMzFjvmGA"
+                  src="/founder2.jpeg"
                   alt="Co-Founder"
-                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300 border-black"
+                  style={{ borderWidth: '32px', borderStyle: 'solid' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="text-2xl font-bold">Co-Founder</h3>
+                  <p className="font-bold text-white">Parth</p>
                   <p className="text-yellow-300">CTO</p>
+                  <p className="text-yellow-300">Co-Founder</p>
                 </div>
               </div>
               
