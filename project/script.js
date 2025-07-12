@@ -1,21 +1,6 @@
-// Supabase Configuration
-const SUPABASE_URL = 'https://your-project.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-key';
-
-// Initialize Supabase client (only if Supabase is available)
-let supabase = null;
-try {
-    if (window.supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-} catch (error) {
-    console.log('Supabase not configured, continuing without it');
-}
-
 // Global variables
 let currentImageIndex = 0;
 let isSubmittingWaitlist = false;
-let currentUser = null;
 
 const heroImages = [
     {
@@ -47,10 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSmoothScrolling();
     initializeMobileMenu();
     initializeForms();
-    initializeModals();
     initializeNavigation();
     initializeAnimations();
-    checkAuthStatus();
 });
 
 // Carousel Functions
@@ -227,62 +210,7 @@ function toggleMobileMenu() {
     }
 }
 
-// Modal Functions
-function initializeModals() {
-    // Close modal when clicking outside
-    window.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal')) {
-            e.target.style.display = 'none';
-        }
-    });
-    
-    // Close modal with escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeAllModals();
-        }
-    });
-}
 
-function showLoginModal(userType = '') {
-    const modal = document.getElementById('loginModal');
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-}
-
-function showRegisterModal(userType = '') {
-    const modal = document.getElementById('registerModal');
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        
-        // Pre-select user type if provided
-        if (userType) {
-            const select = document.getElementById('registerType');
-            if (select) {
-                select.value = userType;
-            }
-        }
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restore scrolling
-    }
-}
-
-function closeAllModals() {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.style.display = 'none';
-    });
-    document.body.style.overflow = 'auto'; // Restore scrolling
-}
 
 // Form Handling
 function initializeForms() {
@@ -290,18 +218,6 @@ function initializeForms() {
     const waitlistForm = document.getElementById('waitlistForm');
     if (waitlistForm) {
         waitlistForm.addEventListener('submit', handleWaitlistSubmit);
-    }
-    
-    // Login Form
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLoginSubmit);
-    }
-    
-    // Register Form
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegisterSubmit);
     }
 }
 
@@ -324,203 +240,17 @@ async function handleWaitlistSubmit(e) {
     submitBtn.textContent = 'Joining...';
     submitBtn.disabled = true;
     
-    try {
-        const { error } = await supabase
-            .from('waitlist_signups')
-            .insert([{
-                email: email,
-                signup_type: 'general',
-                source: 'homepage_cta'
-            }]);
-        
-        if (error) {
-            if (error.code === '23505') { // Unique constraint violation
-                showToast('This email is already on our waitlist!', 'error');
-            } else {
-                throw error;
-            }
-        } else {
-            showToast('🎉 You\'re on the waitlist! We\'ll notify you when we launch.', 'success');
-            emailInput.value = '';
-        }
-    } catch (error) {
-        console.error('Waitlist signup error:', error);
-        if (error.message?.toLowerCase().includes('network')) {
-            showToast('Network error: Please check your internet connection or try again later.', 'error');
-        } else if (error.message?.toLowerCase().includes('invalid api key')) {
-            showToast('Supabase credentials are invalid. Please contact support.', 'error');
-        } else {
-            showToast('Failed to join waitlist. Please try again.', 'error');
-        }
-    } finally {
+    // Simulate API call
+    setTimeout(() => {
+        showToast('🎉 You\'re on the waitlist! We\'ll notify you when we launch.', 'success');
+        emailInput.value = '';
         isSubmittingWaitlist = false;
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-    }
+    }, 1000);
 }
 
-async function handleLoginSubmit(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    
-    if (!email || !password) {
-        showToast('Please fill in all fields', 'error');
-        return;
-    }
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Logging in...';
-    
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-        
-        if (error) {
-            throw error;
-        }
-        
-        showToast('Login successful!', 'success');
-        closeModal('loginModal');
-        
-        // Store user data
-        currentUser = data.user;
-        
-        // Redirect based on user type
-        const userType = data.user?.user_metadata?.user_type;
-        if (userType === 'business') {
-            window.location.href = '/business-dashboard.html';
-        } else if (userType === 'worker') {
-            window.location.href = '/worker-dashboard.html';
-        } else {
-            window.location.href = '/dashboard.html';
-        }
-        
-    } catch (error) {
-        console.error('Login error:', error);
-        showToast(error.message || 'Login failed. Please try again.', 'error');
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Login';
-    }
-}
 
-async function handleRegisterSubmit(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const password = document.getElementById('registerPassword').value;
-    const userType = document.getElementById('registerType').value;
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    
-    if (!name || !email || !password || !userType) {
-        showToast('Please fill in all fields', 'error');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showToast('Password must be at least 6 characters long', 'error');
-        return;
-    }
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Creating account...';
-    
-    try {
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    full_name: name,
-                    user_type: userType
-                }
-            }
-        });
-        
-        if (error) {
-            if (error.message.includes('already registered')) {
-                showToast('This email is already registered. Please login instead.', 'error');
-            } else {
-                throw error;
-            }
-        } else {
-            showToast('Registration successful! Please check your email to verify your account.', 'success');
-            closeModal('registerModal');
-            
-            // Clear form
-            document.getElementById('registerForm').reset();
-        }
-        
-    } catch (error) {
-        console.error('Registration error:', error);
-        showToast(error.message || 'Registration failed. Please try again.', 'error');
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Register';
-    }
-}
-
-// Authentication Functions
-async function checkAuthStatus() {
-    if (!supabase) {
-        console.log('Supabase not available, skipping auth check');
-        updateAuthUI(false);
-        return;
-    }
-    
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            currentUser = user;
-            updateAuthUI(true);
-        } else {
-            updateAuthUI(false);
-        }
-    } catch (error) {
-        console.error('Auth check error:', error);
-        updateAuthUI(false);
-    }
-}
-
-function updateAuthUI(isLoggedIn) {
-    const authButtons = document.querySelector('.auth-buttons');
-    if (!authButtons) return;
-    
-    if (isLoggedIn) {
-        authButtons.innerHTML = `
-            <span class="user-welcome">Welcome, ${currentUser?.user_metadata?.full_name || 'User'}!</span>
-            <button class="btn btn-outline" onclick="handleLogout()">Logout</button>
-        `;
-    } else {
-        authButtons.innerHTML = `
-            <button class="btn btn-outline" onclick="showLoginModal()">Login</button>
-            <button class="btn btn-primary" onclick="showRegisterModal()">Register</button>
-        `;
-    }
-}
-
-async function handleLogout() {
-    if (!supabase) {
-        console.log('Supabase not available');
-        return;
-    }
-    
-    try {
-        await supabase.auth.signOut();
-        currentUser = null;
-        updateAuthUI(false);
-        showToast('Logged out successfully', 'success');
-    } catch (error) {
-        console.error('Logout error:', error);
-        showToast('Logout failed. Please try again.', 'error');
-    }
-}
 
 // Toast Notifications
 function showToast(message, type = 'info') {
@@ -619,18 +349,7 @@ window.addEventListener('resize', debounce(function() {
     }
 }, 250));
 
-// Error handling for Supabase connection
-window.addEventListener('error', function(e) {
-    if (e.message.includes('Supabase')) {
-        showToast('Connection error. Please check your internet connection.', 'error');
-    }
-});
-
 // Export functions for global access
-window.showLoginModal = showLoginModal;
-window.showRegisterModal = showRegisterModal;
-window.closeModal = closeModal;
 window.toggleMobileMenu = toggleMobileMenu;
 window.changeImage = changeImage;
-window.goToImage = goToImage;
-window.handleLogout = handleLogout; 
+window.goToImage = goToImage; 
