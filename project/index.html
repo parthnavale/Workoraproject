@@ -1,13 +1,576 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WÖRKORA - On-Demand Worker Platform</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="bee-icon">
+                        <svg viewBox="0 0 24 24" class="bee-svg">
+                            <ellipse cx="12" cy="14" rx="5" ry="7" class="bee-body"/>
+                            <ellipse cx="12" cy="11" rx="4.5" ry="1.2" class="bee-stripe"/>
+                            <ellipse cx="12" cy="14" rx="4.5" ry="1.2" class="bee-stripe"/>
+                            <ellipse cx="12" cy="17" rx="4.5" ry="1.2" class="bee-stripe"/>
+                            <circle cx="12" cy="7" r="3.5" class="bee-head"/>
+                            <circle cx="10.5" cy="6.5" r="0.8" class="bee-eye"/>
+                            <circle cx="13.5" cy="6.5" r="0.8" class="bee-eye"/>
+                            <circle cx="10.7" cy="6.2" r="0.3" class="bee-highlight"/>
+                            <circle cx="13.7" cy="6.2" r="0.3" class="bee-highlight"/>
+                            <line x1="10.5" y1="4.5" x2="9.5" y2="3" class="bee-antenna"/>
+                            <line x1="13.5" y1="4.5" x2="14.5" y2="3" class="bee-antenna"/>
+                            <circle cx="9.5" cy="3" r="0.6" class="bee-antenna-tip"/>
+                            <circle cx="14.5" cy="3" r="0.6" class="bee-antenna-tip"/>
+                            <ellipse cx="8" cy="10" rx="2.5" ry="4" class="bee-wing" transform="rotate(-15 8 10)"/>
+                            <ellipse cx="16" cy="10" rx="2.5" ry="4" class="bee-wing" transform="rotate(15 16 10)"/>
+                            <ellipse cx="7.5" cy="12" rx="1.8" ry="3" class="bee-wing-inner" transform="rotate(-20 7.5 12)"/>
+                            <ellipse cx="16.5" cy="12" rx="1.8" ry="3" class="bee-wing-inner" transform="rotate(20 16.5 12)"/>
+                            <path d="M7 8 Q8 10 7 12" class="bee-wing-vein"/>
+                            <path d="M17 8 Q16 10 17 12" class="bee-wing-vein"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">WÖRKORA</span>
+                </div>
+                
+                <nav class="nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#team" class="nav-link">Team</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+                
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" onclick="showLoginModal()">Login</button>
+                    <button class="btn btn-primary" onclick="showRegisterModal()">Register</button>
+                </div>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="badge">
+                        🚀 Launching Soon in India
+                    </div>
+                    
+                    <h1 class="hero-title">
+                        Get Help
+                        <span class="highlight">in 10 Minutes</span>
+                    </h1>
+                    
+                    <p class="hero-description">
+                        Transform your business with India's fastest on-demand workforce marketplace. Connect with verified employees instantly, or find flexible job opportunities near you.
+                    </p>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number">≤5 Min</div>
+                            <div class="stat-label">Average Job Fill Time</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Platform Availability</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Verified Employees</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-image">
+                    <div class="image-carousel">
+                        <!-- Fallback images in case JavaScript fails -->
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Busy retail store" class="carousel-image active">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Modern electronics store" class="carousel-image">
+                        <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Fashion retail store" class="carousel-image">
+                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Grocery store" class="carousel-image">
+                        <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Pharmacy" class="carousel-image">
+                        
+                        <button class="carousel-btn prev" onclick="changeImage(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-btn next" onclick="changeImage(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        
+                        <div class="carousel-indicators">
+                            <span class="indicator active" onclick="goToImage(0)"></span>
+                            <span class="indicator" onclick="goToImage(1)"></span>
+                            <span class="indicator" onclick="goToImage(2)"></span>
+                            <span class="indicator" onclick="goToImage(3)"></span>
+                            <span class="indicator" onclick="goToImage(4)"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="floating-card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="card-text">
+                                <p class="card-title">Employee Found!</p>
+                                <p class="card-subtitle">2.3 km away</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Us?</h2>
+                <p>We're revolutionizing India's stores and shops staffing with cutting-edge technology and unmatched reliability.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Jobs filled in 5 minutes or less with our smart matching system</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Trust & Safety</h3>
+                    <p>Aadhaar-KYC, background-checked & rated by peers</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Work From Your City</h3>
+                    <p>No long drives, no extra allowances. Find job opportunities near you</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Instant Payments</h3>
+                    <p>No more cash hassles—instant UPI payout after shift</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Simple, fast, and reliable - get started in 3 easy steps</p>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="steps-column">
+                    <h3>For Stores & Shops</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Post Your Requirement</h4>
+                                <p>Describe your staffing need - store manager, sales assistant, store helper, or any other role for your store or shop.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Get Matched Instantly</h4>
+                                <p>Our System finds the best employees with store and shop experience and sends you qualified candidates within minutes.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Hire & Manage</h4>
+                                <p>Select employees, track attendance, and make secure payments through our platform.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="steps-column">
+                    <h3>For Employees</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Create Your Profile</h4>
+                                <p>Sign up for free, add your store and shop skills, experience, and preferences to get started.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Get Job Matches</h4>
+                                <p>Receive notifications for store and shop jobs that match your skills and location preferences.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Work & Earn</h4>
+                                <p>Accept jobs, complete work, and get paid directly to your account with full transparency.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust & Safety Section -->
+    <section class="trust-safety">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trust & Safety First</h2>
+                <p>Your security and peace of mind are our top priorities</p>
+            </div>
+            
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Background Verified</h3>
+                    <p>All employees undergo comprehensive background checks</p>
+                </div>
+                
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Insured Work</h3>
+                    <p>All work is covered by comprehensive insurance</p>
+                </div>
+                
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Rated & Reviewed</h3>
+                    <p>Transparent rating system for quality assurance</p>
+                </div>
+                
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Secure Payments</h3>
+                    <p>Digital payments with full transaction transparency</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>About WÖRKORA</h2>
+                <p>We're on a mission to revolutionize India's workforce marketplace by connecting businesses with required employees instantly.</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Our Vision</h3>
+                    <p>WÖRKORA was born from a simple observation: businesses struggle to find reliable people quickly, while people struggle to find consistent, well-paying opportunities. We saw an opportunity to bridge this gap using technology.</p>
+                    <p>Our platform leverages to connect the people with job in minutes, not days. We focus on stores, shops, and retail businesses that need flexible staffing solutions.</p>
+                    
+                    <div class="about-stats">
+                        <div class="about-stat">
+                            <div class="about-stat-number">2025</div>
+                            <div class="about-stat-label">Founded</div>
+                        </div>
+                        <div class="about-stat">
+                            <div class="about-stat-number">India</div>
+                            <div class="about-stat-label">Based in</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-image">
+                                            <img src="public/WorkBee (4).png" alt="WÖRKORA Logo">
+                </div>
+            </div>
+            
+            <div class="about-features">
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h4>Our Mission</h4>
+                    <p>To make workforce management effortless for businesses and provide flexible earning opportunities for employees.</p>
+                </div>
+                
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Our Values</h4>
+                    <p>Trust, transparency, and reliability form the foundation of every interaction on our platform.</p>
+                </div>
+                
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4>Our Innovation</h4>
+                    <p>Cutting-edge technology meets human-centered design to create seamless experiences.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team">
+        <div class="container">
+            <div class="section-header">
+                <h2>Meet Our Founders</h2>
+                <p>Two passionate entrepreneurs committed to transforming India's workforce landscape through innovation and technology.</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="public/founder1.jpeg" alt="Founder">
+                        <div class="member-overlay">
+                            <div class="member-info">
+                                <p class="member-name">Ashupriya</p>
+                                <p class="member-role">CEO</p>
+                                <p class="member-title">Founder</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member-tags">
+                        <span class="tag">Strategy</span>
+                        <span class="tag">Product Vision</span>
+                        <span class="tag">Leadership</span>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="public/founder2.jpeg" alt="Co-Founder">
+                        <div class="member-overlay">
+                            <div class="member-info">
+                                <p class="member-name">Parth</p>
+                                <p class="member-role">CTO</p>
+                                <p class="member-title">Co-Founder</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member-tags">
+                        <span class="tag">Technology</span>
+                        <span class="tag">Innovation</span>
+                        <span class="tag">Engineering</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="team-vision">
+                <h3>Our Shared Vision</h3>
+                <p>Together, we're building more than just a platform – We believe Every shop owner deserves a lifeline in their moment of crisis – and every employee deserves dignity without leaving their hometown.</p>
+                <div class="vision-stats">
+                    <div class="vision-stat">
+                        <div class="vision-stat-number">5+</div>
+                        <div class="vision-stat-label">Years Combined Experience</div>
+                    </div>
+                    <div class="vision-stat">
+                        <div class="vision-stat-number">100%</div>
+                        <div class="vision-stat-label">Committed to Success</div>
+                    </div>
+                    <div class="vision-stat">
+                        <div class="vision-stat-number">24/7</div>
+                        <div class="vision-stat-label">Dedicated to Growth</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contact" class="cta">
+        <div class="container">
+            <h2>Ready to Transform Your Workforce?</h2>
+            <p>Join thousands of businesses and employees already using WÖRKORA.</p>
+            
+            <div class="waitlist-form">
+                <h3>Get Early Access</h3>
+                <p>Be among the first to experience the future of workforce management.</p>
+                <form id="waitlistForm" class="form">
+                    <div class="form-group">
+                        <input type="email" id="waitlistEmail" placeholder="Enter your email" required>
+                        <button type="submit" class="btn btn-primary">Join Waitlist</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="bee-icon">
+                            <svg viewBox="0 0 24 24" class="bee-svg">
+                                <ellipse cx="12" cy="14" rx="5" ry="7" class="bee-body"/>
+                                <ellipse cx="12" cy="11" rx="4.5" ry="1.2" class="bee-stripe"/>
+                                <ellipse cx="12" cy="14" rx="4.5" ry="1.2" class="bee-stripe"/>
+                                <ellipse cx="12" cy="17" rx="4.5" ry="1.2" class="bee-stripe"/>
+                                <circle cx="12" cy="7" r="3.5" class="bee-head"/>
+                                <circle cx="10.5" cy="6.5" r="0.8" class="bee-eye"/>
+                                <circle cx="13.5" cy="6.5" r="0.8" class="bee-eye"/>
+                                <circle cx="10.7" cy="6.2" r="0.3" class="bee-highlight"/>
+                                <circle cx="13.7" cy="6.2" r="0.3" class="bee-highlight"/>
+                                <line x1="10.5" y1="4.5" x2="9.5" y2="3" class="bee-antenna"/>
+                                <line x1="13.5" y1="4.5" x2="14.5" y2="3" class="bee-antenna"/>
+                                <circle cx="9.5" cy="3" r="0.6" class="bee-antenna-tip"/>
+                                <circle cx="14.5" cy="3" r="0.6" class="bee-antenna-tip"/>
+                                <ellipse cx="8" cy="10" rx="2.5" ry="4" class="bee-wing" transform="rotate(-15 8 10)"/>
+                                <ellipse cx="16" cy="10" rx="2.5" ry="4" class="bee-wing" transform="rotate(15 16 10)"/>
+                                <ellipse cx="7.5" cy="12" rx="1.8" ry="3" class="bee-wing-inner" transform="rotate(-20 7.5 12)"/>
+                                <ellipse cx="16.5" cy="12" rx="1.8" ry="3" class="bee-wing-inner" transform="rotate(20 16.5 12)"/>
+                                <path d="M7 8 Q8 10 7 12" class="bee-wing-vein"/>
+                                <path d="M17 8 Q16 10 17 12" class="bee-wing-vein"/>
+                            </svg>
+                        </div>
+                        <span>WÖRKORA</span>
+                    </div>
+                    <p>Transforming India's on-demand workforce market by connecting businesses with employees in minutes.</p>
+                    
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contact@workora.in</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 9511779007</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Mumbai, Maharashtra, India</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#team">Team</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>For Businesses</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="showRegisterModal('business')">Register Business</a></li>
+                        <li><a href="#" onclick="showLoginModal('business')">Business Login</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>For Workers</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="showRegisterModal('worker')">Register as Worker</a></li>
+                        <li><a href="#" onclick="showLoginModal('worker')">Worker Login</a></li>
+                        <li><a href="#jobs">Find Jobs</a></li>
+                        <li><a href="#earnings">Earnings</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 WÖRKORA. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm" class="form">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>Register</h2>
+            <form id="registerForm" class="form">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerType">Register as</label>
+                    <select id="registerType" required>
+                        <option value="">Select type</option>
+                        <option value="business">Business</option>
+                        <option value="worker">Worker</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
 </html>
