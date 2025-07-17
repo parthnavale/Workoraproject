@@ -1180,3 +1180,12 @@ body {
         grid-template-columns: 1fr;
     }
 } 
+
+.yellow-o {
+  color: #FFD600;
+  font-weight: bold;
+}
+.yellow-ora {
+  color: #FFD600;
+  font-weight: bold;
+} 
